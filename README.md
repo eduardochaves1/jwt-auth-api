@@ -1,4 +1,7 @@
-# jwt-auth-api
-Authentication API using JWT
+# JWT Authentication API
 
-## > Still In Development
+Authentication API using JWT.
+
+## > Still In Development <
+
+Checkout `dev` brach.
