@@ -4,4 +4,4 @@ Authentication API using JWT.
 
 ## > Still In Development <
 
-Checkout `dev` brach.
+Checkout `dev` branch.
