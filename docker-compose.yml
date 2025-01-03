@@ -1,0 +1,18 @@
+services:
+  api:
+    container_name: jwt-auth-api
+    build: .
+    ports:
+      - 3000:3000
+    networks:
+      - jwt-auth-api
+    volumes:
+      - jwt-auth-api:/app
+
+volumes:
+  jwt-auth-api:
+    name: jwt-auth-api
+
+networks:
+  jwt-auth-api:
+    name: jwt-auth-api
