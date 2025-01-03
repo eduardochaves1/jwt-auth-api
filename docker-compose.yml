@@ -2,16 +2,37 @@ services:
   api:
     container_name: jwt-auth-api
     build: .
+    restart: always
     ports:
       - 3000:3000
     networks:
       - jwt-auth-api
     volumes:
       - jwt-auth-api:/app
+  mongodb:
+    container_name: mongodb
+    image: mongo:7.0.16
+    ports:
+      - 27017:27017
+    restart: always
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+    networks:
+      - jwt-auth-api
+    volumes:
+      - mongodb_data:/data/db
+      - mongodb_configdb:/data/configdb
+    expose:
+      - 27017
 
 volumes:
   jwt-auth-api:
     name: jwt-auth-api
+  mongodb_data:
+    name: mongodb_data
+  mongodb_configdb:
+    name: mongodb_configdb
 
 networks:
   jwt-auth-api:
