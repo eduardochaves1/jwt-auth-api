@@ -18,10 +18,12 @@ const userSchema: Schema<IUser> = new Schema(
   }
 );
 
-export const zUser: z.ZodSchema<Pick<IUser, 'username' | 'password'>> = z.object({
+export const zUser = z.object({
   username: z.string().min(2).max(30),
   password: z.string().min(4).max(50),
 })
+
+export const zUsername = zUser.pick({ username: true })
 
 const User = model<IUser>('User', userSchema);
 
