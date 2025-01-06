@@ -8,8 +8,21 @@ const validateRequest = (schema: ZodSchema) => (req: Request, res: Response, nex
     res.status(400).json(validation.error)
   }
 
-  req.body = validation.data;
   next();
+}
+
+export const validateParam = (param: string, schema: ZodSchema) => (req: Request, res: Response, next: NextFunction) => {
+  if (req.params[param]) {
+    const validation = schema.parse(req.params[param]);
+
+    if (!validation.success) {
+      res.status(400).json(validation.error);
+    }
+
+    next();
+  }
+
+  res.status(400).json({ message: `Missing required param: ${param}`});
 }
 
 export default validateRequest;
