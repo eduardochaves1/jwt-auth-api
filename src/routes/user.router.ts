@@ -1,4 +1,6 @@
 import { Router } from "express";
+import { zUser } from "../models/user.model";
+import validateRequest from "../middlewares/validateRequest";
 import {
   createUser,
   updateUser,
@@ -14,10 +16,10 @@ import {
 const router = Router();
 
 router.get('/', getUsers);
-router.post('/', createUser);
+router.post('/', validateRequest(zUser), createUser);
 
 router.get('/:username', getUser);
-router.put('/:username', updateUser);
+router.put('/:username', validateRequest(zUser), updateUser);
 router.delete('/:username', deleteUser);
 
 router.post('/:username/login', loginUser);
