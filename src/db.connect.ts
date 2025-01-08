@@ -7,8 +7,8 @@ const dbName = process.env.MONGODB_DATABASE;
 
 const mongodbConnection = async () => {
   try {
-    await mongoose.connect(`mongodb://${dbUsername}:${dbPassword}@${dbDomain}/${dbName}`)
-    return console.log('Successfully Connected to MongoDB at ' + dbName)
+    await mongoose.connect(`mongodb://${dbUsername}:${dbPassword}@${dbDomain}/${dbName}?authSource=admin`)
+    return console.info('Successfully Connected to MongoDB at ' + dbName)
   } catch (error) {
     return console.error('Error While Connecting MongoDB: ', error)
   }
