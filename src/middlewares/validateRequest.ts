@@ -2,10 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import { ZodSchema } from "zod";
 
 const validateRequest = (schema: ZodSchema) => (req: Request, res: Response, next: NextFunction) => {
-  const validation = schema.parse(req.body);
+  const valid = schema.parse(req.body);
 
-  if (!validation.success) {
-    res.status(400).json(validation.error)
+  if (!valid) {
+    res.status(400).json(valid.error)
+    return;
   }
 
   next();
@@ -13,13 +14,15 @@ const validateRequest = (schema: ZodSchema) => (req: Request, res: Response, nex
 
 export const validateParam = (param: string, schema: ZodSchema) => (req: Request, res: Response, next: NextFunction) => {
   if (req.params[param]) {
-    const validation = schema.parse(req.params[param]);
+    const valid = schema.parse(req.params[param]);
 
-    if (!validation.success) {
-      res.status(400).json(validation.error);
+    if (!valid) {
+      res.status(400).json(valid.error);
+      return;
     }
 
     next();
+    return;
   }
 
   res.status(400).json({ message: `Missing required param: ${param}`});

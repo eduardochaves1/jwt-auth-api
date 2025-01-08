@@ -7,8 +7,8 @@ services:
       - 3000:3000
     networks:
       - jwt-auth-api
-    volumes:
-      - jwt-auth-api:/app
+    env_file:
+      - .env
   mongodb:
     container_name: mongodb
     image: mongo:7.0.16
@@ -27,8 +27,6 @@ services:
       - 27017
 
 volumes:
-  jwt-auth-api:
-    name: jwt-auth-api
   mongodb_data:
     name: mongodb_data
   mongodb_configdb:
