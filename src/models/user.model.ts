@@ -3,7 +3,7 @@ import z from 'zod';
 
 export interface IUser extends Document {
   createdAt: Date;
-  updatedAi: Date;
+  updatedAt: Date;
   username: string;
   password: string;
 }
