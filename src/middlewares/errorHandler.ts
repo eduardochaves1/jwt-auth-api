@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import { ZodError } from "zod";
 
 type Error = {
   status?: number;
@@ -7,12 +8,16 @@ type Error = {
 }
 
 const errorHandler = (err: Error, Request: Request, res: Response, next: NextFunction) => {
-  console.error(err.issues);
+  const zodErr = err instanceof ZodError;
 
-  res.status(err.status || 500).json({
+  console.error(zodErr ? err.issues : err);
+
+  const status = zodErr ? 400 : err.status || 500;
+
+  res.status(status).json({
     error: {
-      status: err.status || 500,
-      message: err.message || err.issues[0].message || 'Internal Server Error',
+      status: status,
+      issues: err.issues || err.message || 'Internal Server Error',
     },
   });
 };
