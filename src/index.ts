@@ -1,13 +1,23 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import mongodbConnection from './db.connect';
+import errorHandler from './middlewares/errorHandler';
 import userRouter from './routes/user.router';
 
-dotenv.config();
-mongodbConnection();
-const port = 3000;
-const app = express();
+const startServer = async () => {
+  dotenv.config();
+  await mongodbConnection();
 
-app.use('/api/users', userRouter);
+  const port = 3000;
+  const app = express();
 
-app.listen(port, () => console.log(`Server is running on port ${port}`))
+  app.use(express.json());
+
+  app.use('/api/users', userRouter);
+  
+  app.use(errorHandler);
+  
+  app.listen(port, () => console.log(`Server is running on port ${port}`))
+}  
+
+startServer();
