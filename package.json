@@ -33,7 +33,6 @@
     "@types/express": "^5.0.0",
     "@types/mongoose": "^5.11.97",
     "@types/node": "^22.10.5",
-    "nodemon": "^3.1.9",
     "typescript": "^5.7.2"
   }
 }
