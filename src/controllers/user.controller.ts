@@ -1,6 +1,13 @@
 import { Request, Response } from "express";
 import bcrypt from 'bcrypt';
-import User from '../models/user.model';
+import User, { IUser } from '../models/user.model';
+
+const userWithoutPassword = (user: IUser) => {
+  const userResponse = user.toObject();
+  delete (userResponse as any).password;
+
+  return userResponse;
+}
 
 export const createUser = async (req: Request, res: Response): Promise<void> => {
   try {
