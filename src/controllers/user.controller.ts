@@ -9,6 +9,8 @@ const userWithoutPassword = (user: IUser) => {
   return userResponse;
 }
 
+const bcryptSeed: number = 12;
+
 export const createUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { username, password } = req.body;
@@ -20,7 +22,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
       return;
     }
 
-    const hashedPassword = await bcrypt.hash(password, 12);
+    const hashedPassword = await bcrypt.hash(password, bcryptSeed);
 
     const newUser = new User({ username, password: hashedPassword });
     await newUser.save();
