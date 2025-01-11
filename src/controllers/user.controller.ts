@@ -1,9 +1,24 @@
 import { Request, Response } from "express";
+import bcrypt from 'bcrypt';
 import User from '../models/user.model';
 
 export const createUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    res.status(404).json({ message: "Endpoint to be developed" })
+    const { username, password } = req.body;
+
+    const existingUser = await User.findOne({ username });
+
+    if (existingUser) {
+      res.status(400).json({ error: 'User Already Exists' })
+      return;
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+
+    const newUser = new User({ username, password: hashedPassword });
+    await newUser.save();
+
+    res.status(201).json(newUser)
   } catch (error) {
     res.status(500).json({
       message: 'Internal Server Error',
