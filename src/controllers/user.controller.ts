@@ -25,7 +25,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
     const newUser = new User({ username, password: hashedPassword });
     await newUser.save();
 
-    res.status(201).json(newUser)
+    res.status(201).json(userWithoutPassword(newUser));
   } catch (error) {
     res.status(500).json({
       message: 'Internal Server Error',
