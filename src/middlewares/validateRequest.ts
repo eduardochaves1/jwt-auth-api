@@ -5,7 +5,7 @@ const validateRequest = (schema: ZodSchema) => (req: Request, res: Response, nex
   const valid = schema.parse(req.body);
 
   if (!valid) {
-    res.status(400).json(valid.error)
+    res.status(400).json({ error: valid.error })
     return;
   }
 
@@ -25,7 +25,7 @@ export const validateParam = (param: string, schema: ZodSchema) => (req: Request
     return;
   }
 
-  res.status(400).json({ message: `Missing required param: ${param}`});
+  res.status(400).json({ error: `Missing required param: ${param}`});
 }
 
 export default validateRequest;
