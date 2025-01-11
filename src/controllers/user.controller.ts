@@ -38,7 +38,32 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
 
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    res.status(404).json({ message: "Endpoint to be developed" })
+    const userToUpdate = req.params.username;
+    const { username, password } = req.body;
+
+    const existingUser = await User.findOne({ username: userToUpdate });
+
+    if (!existingUser) {
+      res.status(404).json({ error: "User does not exist" });
+      return;
+    }
+
+    const hashedPassword = await bcrypt.hash(password, bcryptSeed);
+
+    const updatedUser = await User.updateOne(
+      { username: userToUpdate },
+      { username, password: hashedPassword }
+    );
+
+    if (!updatedUser.acknowledged) {
+      res.status(500).json({ error: "The delete operation was not acknowledged by the database"})
+    } else if (updatedUser.matchedCount < 1) {
+      res.status(404).json({ error: `No user found with the username ${userToUpdate}`});
+    } else if (updatedUser.modifiedCount < 1) {
+      res.status(500).json({ error: "Some error happened and the user was not updated" });
+    } else {
+      res.status(200).json(updatedUser);
+    }
   } catch (error) {
     res.status(500).json({
       message: 'Internal Server Error',
