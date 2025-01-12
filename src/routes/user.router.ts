@@ -17,17 +17,15 @@ const validateUsernameParam = validateParam('username', zUsername);
 
 const router = Router();
 
-router.get('/', getUsers);
-router.post('/', validateRequest(zUser), createUser);
-
-router.get('/:username', validateUsernameParam, getUser);
-router.put('/:username', validateUsernameParam, validateRequest(zUser), updateUser);
-router.delete('/:username', validateUsernameParam, deleteUser);
-
-router.post('/:username/login', validateUsernameParam, loginUser);
-router.delete('/:username/logout', validateUsernameParam, logoutUser);
-
-router.post('/:username/promote', validateUsernameParam, promoteAdmin);
-router.delete('/:username/demote', validateUsernameParam, demoteAdmin);
+router
+  .get('/', getUsers)
+  .post('/', validateRequest(zUser), createUser)
+  .get('/:username', validateUsernameParam, getUser)
+  .put('/:username', validateUsernameParam, validateRequest(zUser), updateUser)
+  .delete('/:username', validateUsernameParam, deleteUser)
+  .post('/:username/login', validateUsernameParam, loginUser)
+  .delete('/:username/logout', validateUsernameParam, logoutUser)
+  .post('/:username/promote', validateUsernameParam, promoteAdmin)
+  .delete('/:username/demote', validateUsernameParam, demoteAdmin);
 
 export default router;
