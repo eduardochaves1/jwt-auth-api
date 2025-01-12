@@ -18,7 +18,7 @@ const validateUsernameParam = validateParam('username', zUsername);
 const router = Router();
 
 router
-  .post('/', getUsers)
+  .post('/fetch', getUsers)
   .post('/', validateRequest(zUser), createUser)
   .get('/:username', validateUsernameParam, getUser)
   .put('/:username', validateUsernameParam, validateRequest(zUser), updateUser)
