@@ -23,7 +23,7 @@ router
   .get('/:username', validateUsernameParam, getUser)
   .put('/:username', validateUsernameParam, validateRequest(zUser), updateUser)
   .delete('/:username', validateUsernameParam, deleteUser)
-  .post('/:username/login', validateUsernameParam, loginUser)
+  .post('/login', validateRequest(zUser), loginUser)
   .delete('/:username/logout', validateUsernameParam, logoutUser)
   .post('/:username/promote', validateUsernameParam, promoteAdmin)
   .delete('/:username/demote', validateUsernameParam, demoteAdmin);
