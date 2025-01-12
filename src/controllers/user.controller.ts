@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from 'bcrypt';
 import User, { IUser } from '../models/user.model';
+import errorResponse from "../utils/errorResponses";
 
 const userWithoutPassword = (user: IUser) => {
   const userResponse = user.toObject();
@@ -11,6 +12,9 @@ const userWithoutPassword = (user: IUser) => {
 
 const bcryptSeed: number = 12;
 
+const dbUnknowledgeMsg: string = "The operation was not acknowledged by the database";
+const userNotFoundMsg = (username: string) => `No user found with the username ${username}`;
+
 export const createUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const { username, password } = req.body;
@@ -18,7 +22,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
     const existingUser = await User.findOne({ username });
 
     if (existingUser) {
-      res.status(400).json({ error: 'User Already Exists' })
+      errorResponse(res, 400, 'User Already Exists');
       return;
     }
 
@@ -28,12 +32,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
     await newUser.save();
 
     res.status(201).json(userWithoutPassword(newUser));
-  } catch (error) {
-    res.status(500).json({
-      message: 'Internal Server Error',
-      error
-    })
-  }
+  } catch (error) { errorResponse(res, 500, 'Internal Server Error', error) }
 }
 
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
@@ -44,7 +43,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
     const existingUser = await User.findOne({ username: userToUpdate });
 
     if (!existingUser) {
-      res.status(404).json({ error: "User does not exist" });
+      errorResponse(res, 404, "User does not exist");
       return;
     }
 
@@ -56,20 +55,15 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
     );
 
     if (!updatedUser.acknowledged) {
-      res.status(500).json({ error: "The delete operation was not acknowledged by the database"})
+      errorResponse(res, 500, dbUnknowledgeMsg);
     } else if (updatedUser.matchedCount < 1) {
-      res.status(404).json({ error: `No user found with the username ${userToUpdate}`});
+      errorResponse(res, 404, userNotFoundMsg(userToUpdate));
     } else if (updatedUser.modifiedCount < 1) {
-      res.status(500).json({ error: "Some error happened and the user was not updated" });
+      errorResponse(res, 500, "Some error happened and the user was not updated");
     } else {
       res.status(200).json(updatedUser);
     }
-  } catch (error) {
-    res.status(500).json({
-      message: 'Internal Server Error',
-      error
-    })
-  }
+  } catch (error) { errorResponse(res, 500, 'Internal Server Error', error) }
 }
 
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
@@ -79,82 +73,47 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
     const deletedUser = await User.deleteOne({ username });
 
     if (!deletedUser.acknowledged) {
-      res.status(500).json({ error: "The delete operation was not acknowledged by the database"})
+      errorResponse(res, 500, dbUnknowledgeMsg);
     } else if (deletedUser.deletedCount < 1) {
-      res.status(404).json({ error: `No user found with the username ${username}`})
+      errorResponse(res, 404, userNotFoundMsg(username))
     } else {
       res.status(200).json(deletedUser);
     }
-  } catch (error) {
-    res.status(500).json({
-      message: 'Internal Server Error',
-      error
-    })
-  }
+  } catch (error) { errorResponse(res, 500, 'Internal Server Error', error) }
 }
 
 export const getUser = async (req: Request, res: Response): Promise<void> => {
   try {
     res.status(404).json({ message: "Endpoint to be developed" })
-  } catch (error) {
-    res.status(500).json({
-      message: 'Internal Server Error',
-      error
-    })
-  }
+  } catch (error) { errorResponse(res, 500, 'Internal Server Error', error) }
 }
 
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
   try {
     res.status(404).json({ message: "Endpoint to be developed" })
-  } catch (error) {
-    res.status(500).json({
-      message: 'Internal Server Error',
-      error
-    })
-  }
+  } catch (error) { errorResponse(res, 500, 'Internal Server Error', error) }
 }
 
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
   try {
     res.status(404).json({ message: "Endpoint to be developed" })
-  } catch (error) {
-    res.status(500).json({
-      message: 'Internal Server Error',
-      error
-    })
-  }
+  } catch (error) { errorResponse(res, 500, 'Internal Server Error', error) }
 }
 
 export const logoutUser = async (req: Request, res: Response): Promise<void> => {
   try {
     res.status(404).json({ message: "Endpoint to be developed" })
-  } catch (error) {
-    res.status(500).json({
-      message: 'Internal Server Error',
-      error
-    })
-  }
+  } catch (error) { errorResponse(res, 500, 'Internal Server Error', error) }
 }
 
 export const promoteAdmin = async (req: Request, res: Response): Promise<void> => {
   try {
     res.status(404).json({ message: "Endpoint to be developed" })
-  } catch (error) {
-    res.status(500).json({
-      message: 'Internal Server Error',
-      error
-    })
-  }
+  } catch (error) { errorResponse(res, 500, 'Internal Server Error', error) }
 }
 
 export const demoteAdmin = async (req: Request, res: Response): Promise<void> => {
   try {
     res.status(404).json({ message: "Endpoint to be developed" })
-  } catch (error) {
-    res.status(500).json({
-      message: 'Internal Server Error',
-      error
-    })
-  }
+  } catch (error) { errorResponse(res, 500, 'Internal Server Error', error) }
 }
