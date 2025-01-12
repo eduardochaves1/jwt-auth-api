@@ -12,6 +12,7 @@ const userWithoutPassword = (user: IUser) => {
 
 const bcryptSeed: number = 12;
 const dbUnknowledgeMsg: string = "The operation was not acknowledged by the database";
+const jwtSecret = process.env.JWT_SECRET as string;
 
 export const createUser = async (req: Request, res: Response): Promise<void> => {
   try {

@@ -11,12 +11,7 @@ const jwtAuth = (req: Request, res: Response, next: NextFunction) => {
     return;
   }
 
-  const jwtSecret = process.env.JWT_SECRET;
-
-  if (!jwtSecret) {
-    errorResponse(res, 500, 'Error while trying to authenticate, contact the developer to solve this problem.')
-    return;
-  }
+  const jwtSecret = process.env.JWT_SECRET as string;
 
   try {
     const decoded = jwt.verify(token, jwtSecret);
