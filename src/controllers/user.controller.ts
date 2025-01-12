@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from 'bcrypt';
 import User, { IUser } from '../models/user.model';
 import errorResponse, { userNotFoundError } from "../utils/errorResponses";
+import jwt from 'jsonwebtoken';
 
 const userWithoutPassword = (user: IUser) => {
   const userResponse = user.toObject();
@@ -115,7 +116,26 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
 
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    res.status(404).json({ message: "Endpoint to be developed" })
+    const { username, password } = req.body;
+
+    const user = await User.findOne({ username: username });
+
+    if (!user) {
+      userNotFoundError(res, username);
+    } else {
+      const passwordMatch = await bcrypt.compare(password, user.password);
+
+      if (passwordMatch) {
+        const token = jwt.sign({
+          id: user._id,
+          username: user.username,
+        }, jwtSecret);
+
+        res.status(200).json({ token })
+      } else {
+        errorResponse(res, 401, 'Incorrect Password');
+      }
+    }
   } catch (error) { errorResponse(res, 500, 'Internal Server Error', error) }
 }
 
