@@ -1,5 +1,5 @@
 import express from 'express';
-import dotenv from 'dotenv';
+import dotenv from 'dotenv-safe';
 import mongodbConnection from './db.connect';
 import errorHandler from './middlewares/errorHandler';
 import userRouter from './routes/user.router';
