@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from 'bcrypt';
 import User, { IUser } from '../models/user.model';
-import errorResponse from "../utils/errorResponses";
+import errorResponse, { userNotFoundError } from "../utils/errorResponses";
 
 const userWithoutPassword = (user: IUser) => {
   const userResponse = user.toObject();
@@ -11,9 +11,7 @@ const userWithoutPassword = (user: IUser) => {
 }
 
 const bcryptSeed: number = 12;
-
 const dbUnknowledgeMsg: string = "The operation was not acknowledged by the database";
-const userNotFoundMsg = (username: string) => `No user found with the username ${username}`;
 
 export const createUser = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -43,7 +41,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
     const existingUser = await User.findOne({ username: userToUpdate });
 
     if (!existingUser) {
-      errorResponse(res, 404, "User does not exist");
+      userNotFoundError(res, username);
       return;
     }
 
@@ -57,7 +55,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
     if (!updatedUser.acknowledged) {
       errorResponse(res, 500, dbUnknowledgeMsg);
     } else if (updatedUser.matchedCount < 1) {
-      errorResponse(res, 404, userNotFoundMsg(userToUpdate));
+      userNotFoundError(res, userToUpdate);
     } else if (updatedUser.modifiedCount < 1) {
       errorResponse(res, 500, "Some error happened and the user was not updated");
     } else {
@@ -75,7 +73,7 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
     if (!deletedUser.acknowledged) {
       errorResponse(res, 500, dbUnknowledgeMsg);
     } else if (deletedUser.deletedCount < 1) {
-      errorResponse(res, 404, userNotFoundMsg(username))
+      userNotFoundError(res, username)
     } else {
       res.status(200).json(deletedUser);
     }
