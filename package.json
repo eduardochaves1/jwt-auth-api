@@ -1,6 +1,6 @@
 {
   "name": "jwt-auth-api",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Authentication API using JWT",
   "main": "./dist/main.js",
   "scripts": {
