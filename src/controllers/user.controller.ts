@@ -82,7 +82,15 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
 
 export const getUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    res.status(404).json({ message: "Endpoint to be developed" })
+    const username = req.params.username;
+
+    const existingUser = await User.findOne({ username: username });
+
+    if (!existingUser) {
+      userNotFoundError(res, username);
+    } else {
+      res.status(200).json(userWithoutPassword(existingUser));
+    }
   } catch (error) { errorResponse(res, 500, 'Internal Server Error', error) }
 }
 
