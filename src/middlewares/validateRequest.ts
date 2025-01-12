@@ -1,11 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodSchema } from "zod";
+import errorResponse from "../utils/errorResponses";
 
 const validateRequest = (schema: ZodSchema) => (req: Request, res: Response, next: NextFunction) => {
   const valid = schema.parse(req.body);
 
   if (!valid) {
-    res.status(400).json({ error: valid.error })
+    errorResponse(res, 400, 'Validation Error', valid.error);
     return;
   }
 
@@ -17,7 +18,7 @@ export const validateParam = (param: string, schema: ZodSchema) => (req: Request
     const valid = schema.parse(req.params[param]);
 
     if (!valid) {
-      res.status(400).json(valid.error);
+      errorResponse(res, 400, 'Validation Error', valid.error);
       return;
     }
 
@@ -25,7 +26,7 @@ export const validateParam = (param: string, schema: ZodSchema) => (req: Request
     return;
   }
 
-  res.status(400).json({ error: `Missing required param: ${param}`});
+  errorResponse(res, 400, `Missing required param: ${param}`);
 }
 
 export default validateRequest;
