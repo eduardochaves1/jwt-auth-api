@@ -11,4 +11,8 @@ const errorResponse = (
   res.status(status).json({ status, error, details });
 }
 
+export const userNotFoundError = (res: Response, username: string) => {
+  errorResponse(res, 404, `No user found with the username ${username}`);
+}
+
 export default errorResponse;
