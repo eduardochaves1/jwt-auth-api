@@ -35,10 +35,10 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
 
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    const userToUpdate = req.params.username;
+    const usernameParam = req.params.username;
     const { username, password } = req.body;
 
-    const existingUser = await User.findOne({ username: userToUpdate });
+    const existingUser = await User.findOne({ username: usernameParam });
 
     if (!existingUser) {
       userNotFoundError(res, username);
@@ -48,14 +48,14 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
     const hashedPassword = await bcrypt.hash(password, bcryptSeed);
 
     const updatedUser = await User.updateOne(
-      { username: userToUpdate },
+      { username: usernameParam },
       { username, password: hashedPassword }
     );
 
     if (!updatedUser.acknowledged) {
       errorResponse(res, 500, dbUnknowledgeMsg);
     } else if (updatedUser.matchedCount < 1) {
-      userNotFoundError(res, userToUpdate);
+      userNotFoundError(res, usernameParam);
     } else if (updatedUser.modifiedCount < 1) {
       errorResponse(res, 500, "Some error happened and the user was not updated");
     } else {
