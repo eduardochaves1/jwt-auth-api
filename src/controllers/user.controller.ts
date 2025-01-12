@@ -96,7 +96,19 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
 
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
   try {
-    res.status(404).json({ message: "Endpoint to be developed" })
+    const { where, limit, sort} = req.body;
+
+    const users = await User.find(where).limit(limit).sort(sort);
+
+    if (!users.length && where) {
+      errorResponse(res, 404, 'No user found with this query')
+    } else if (!users.length) {
+      errorResponse(res, 404, 'No users found in database')
+    } else {
+      const usersWithoutPassword = users.map(user => userWithoutPassword(user));
+      
+      res.status(200).json(usersWithoutPassword);
+    }
   } catch (error) { errorResponse(res, 500, 'Internal Server Error', error) }
 }
 
