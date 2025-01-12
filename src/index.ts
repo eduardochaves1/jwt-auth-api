@@ -11,13 +11,11 @@ const startServer = async () => {
   const port = 3000;
   const app = express();
 
-  app.use(express.json());
-
-  app.use('/api/users', userRouter);
-  
-  app.use(errorHandler);
-  
-  app.listen(port, () => console.log(`Server is running on port ${port}`))
+  app
+    .use(express.json())
+    .use('/api/users', userRouter)
+    .use(errorHandler)
+    .listen(port, () => console.log(`Server is running on port ${port}`));
 }  
 
 startServer();
