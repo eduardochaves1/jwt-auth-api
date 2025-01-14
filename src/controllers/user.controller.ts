@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from 'bcrypt';
 import User, { IUser } from '../models/user.model';
-import errorResponse, { userNotFoundError } from "../utils/errorResponses";
+import errorResponse, { usernameAlreadyInUse, userNotFoundError } from "../utils/errorResponses";
 import jwt from 'jsonwebtoken';
 
 const userWithoutPassword = (user: IUser) => {
@@ -22,7 +22,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
     const existingUser = await User.findOne({ username });
 
     if (existingUser) {
-      errorResponse(res, 400, 'User Already Exists');
+      usernameAlreadyInUse(res);
       return;
     }
 
@@ -41,9 +41,14 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
     const { username, password } = req.body;
 
     const existingUser = await User.findOne({ username: usernameParam });
+    const userWithUsernameInUse = await User.findOne({ username });
 
     if (!existingUser) {
       userNotFoundError(res, username);
+      return;
+    }
+    if (userWithUsernameInUse && userWithUsernameInUse.username !== existingUser.username) {
+      usernameAlreadyInUse(res);
       return;
     }
 
