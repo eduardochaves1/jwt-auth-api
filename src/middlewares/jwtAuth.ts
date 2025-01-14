@@ -3,6 +3,11 @@ import jwt from "jsonwebtoken";
 import errorResponse from "../utils/errorResponses";
 
 const jwtAuth = (req: Request, res: Response, next: NextFunction) => {
+  if (req.path === '/api/users/login') {
+    next();
+    return;
+  }
+
   const authorizationHeader = req.headers.authorization;
   const token = authorizationHeader?.split(' ')[1]
 
