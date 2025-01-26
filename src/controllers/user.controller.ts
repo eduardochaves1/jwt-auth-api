@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import bcrypt from 'bcrypt';
 import User, { IUser } from '../models/user.model';
+import Blacklist from "../models/blacklist.model";
 import errorResponse, { usernameAlreadyInUse, userNotFoundError } from "../utils/errorResponses";
 import jwt from 'jsonwebtoken';
 
@@ -146,7 +147,19 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 
 export const logoutUser = async (req: Request, res: Response): Promise<void> => {
   try {
-    res.status(404).json({ message: "Endpoint to be developed" })
+    const username = req.params.username;
+    const token = req.headers.authorization?.split(' ')[1];
+
+    const existingUser = await User.findOne({ username: username });
+
+    if (!existingUser) {
+      userNotFoundError(res, username);
+    } else {
+      const tokenBlacklisted = new Blacklist({ token, username });
+      await tokenBlacklisted.save();
+
+      res.status(200).json(tokenBlacklisted);
+    }
   } catch (error) { errorResponse(res, 500, 'Internal Server Error', error) }
 }
 
