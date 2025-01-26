@@ -18,12 +18,12 @@ const validateUsernameParam = validateParam('username', zUsername);
 const router = Router();
 
 router
-  .post('/', getUsers)
+  .post('/fetch', getUsers)
   .post('/', validateRequest(zUser), createUser)
   .get('/:username', validateUsernameParam, getUser)
   .put('/:username', validateUsernameParam, validateRequest(zUser), updateUser)
   .delete('/:username', validateUsernameParam, deleteUser)
-  .post('/:username/login', validateUsernameParam, loginUser)
+  .post('/login', validateRequest(zUser), loginUser)
   .delete('/:username/logout', validateUsernameParam, logoutUser)
   .post('/:username/promote', validateUsernameParam, promoteAdmin)
   .delete('/:username/demote', validateUsernameParam, demoteAdmin);
