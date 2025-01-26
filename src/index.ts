@@ -4,6 +4,8 @@ import mongodbConnection from './db.connect';
 import errorHandler from './middlewares/errorHandler';
 import userRouter from './routes/user.router';
 import jwtAuth from './middlewares/jwtAuth';
+import swaggerDocument from './docs/swagger';
+import swaggerUi from 'swagger-ui-express';
 
 const startServer = async () => {
   dotenv.config();
@@ -13,6 +15,7 @@ const startServer = async () => {
   const app = express();
 
   app
+    .use("/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument))
     .use(express.json())
     .use(jwtAuth)
     .use('/api/users', userRouter)
