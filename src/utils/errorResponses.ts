@@ -23,4 +23,8 @@ export const dbUnknowledgeError = (res: Response) => {
   errorResponse(res, 500, "The operation was not acknowledged by the database");
 }
 
+export const internalError = (res: Response, error: any) => {
+  errorResponse(res, 500, 'Internal Server Error', error);
+}
+
 export default errorResponse;
