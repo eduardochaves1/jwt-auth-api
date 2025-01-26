@@ -1,8 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 import errorResponse from "../utils/errorResponses";
+import Blacklist from "../models/blacklist.model";
 
-const jwtAuth = (req: Request, res: Response, next: NextFunction) => {
+const jwtAuth = async (req: Request, res: Response, next: NextFunction) => {
   if (req.path === '/api/users/login') {
     next();
     return;
@@ -13,6 +14,13 @@ const jwtAuth = (req: Request, res: Response, next: NextFunction) => {
 
   if (!token) {
     errorResponse(res, 401, 'Missing Berarer Token in Authorization Header');
+    return;
+  }
+
+  const tokenBlacklisted = await Blacklist.findOne({ token });
+
+  if (tokenBlacklisted) {
+    errorResponse(res, 401, 'Bearer Token Blacklisted, try logging in again')
     return;
   }
 
