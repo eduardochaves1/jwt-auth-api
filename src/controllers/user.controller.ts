@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from 'bcrypt';
 import User, { IUser } from '../models/user.model';
 import Blacklist from "../models/blacklist.model";
-import errorResponse, { usernameAlreadyInUse, userNotFoundError } from "../utils/errorResponses";
+import errorResponse, { usernameAlreadyInUse, userNotFoundError, dbUnknowledgeError } from "../utils/errorResponses";
 import jwt from 'jsonwebtoken';
 
 const userWithoutPassword = (user: IUser) => {
@@ -13,7 +13,6 @@ const userWithoutPassword = (user: IUser) => {
 }
 
 const bcryptSeed: number = 12;
-const dbUnknowledgeMsg: string = "The operation was not acknowledged by the database";
 const jwtSecret = process.env.JWT_SECRET as string;
 
 export const createUser = async (req: Request, res: Response): Promise<void> => {
@@ -61,7 +60,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
     );
 
     if (!updatedUser.acknowledged) {
-      errorResponse(res, 500, dbUnknowledgeMsg);
+      dbUnknowledgeError(res);
     } else if (updatedUser.matchedCount < 1) {
       userNotFoundError(res, usernameParam);
     } else if (updatedUser.modifiedCount < 1) {
@@ -79,7 +78,7 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
     const deletedUser = await User.deleteOne({ username });
 
     if (!deletedUser.acknowledged) {
-      errorResponse(res, 500, dbUnknowledgeMsg);
+      dbUnknowledgeError(res);
     } else if (deletedUser.deletedCount < 1) {
       userNotFoundError(res, username)
     } else {
