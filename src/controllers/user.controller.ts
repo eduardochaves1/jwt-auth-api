@@ -2,8 +2,13 @@ import { Request, Response } from "express";
 import bcrypt from 'bcrypt';
 import User, { IUser } from '../models/user.model';
 import Blacklist from "../models/blacklist.model";
-import errorResponse, { usernameAlreadyInUse, userNotFoundError, dbUnknowledgeError } from "../utils/errorResponses";
 import jwt from 'jsonwebtoken';
+import errorResponse, {
+  usernameAlreadyInUse,
+  userNotFoundError,
+  dbUnknowledgeError,
+  internalError
+} from "../utils/errorResponses";
 
 const userWithoutPassword = (user: IUser) => {
   const userResponse = user.toObject();
@@ -32,7 +37,7 @@ export const createUser = async (req: Request, res: Response): Promise<void> => 
     await newUser.save();
 
     res.status(201).json(userWithoutPassword(newUser));
-  } catch (error) { errorResponse(res, 500, 'Internal Server Error', error) }
+  } catch (error) { internalError(res, error) }
 }
 
 export const updateUser = async (req: Request, res: Response): Promise<void> => {
@@ -68,7 +73,7 @@ export const updateUser = async (req: Request, res: Response): Promise<void> => 
     } else {
       res.status(200).json(updatedUser);
     }
-  } catch (error) { errorResponse(res, 500, 'Internal Server Error', error) }
+  } catch (error) { internalError(res, error) }
 }
 
 export const deleteUser = async (req: Request, res: Response): Promise<void> => {
@@ -84,7 +89,7 @@ export const deleteUser = async (req: Request, res: Response): Promise<void> => 
     } else {
       res.status(200).json(deletedUser);
     }
-  } catch (error) { errorResponse(res, 500, 'Internal Server Error', error) }
+  } catch (error) { internalError(res, error) }
 }
 
 export const getUser = async (req: Request, res: Response): Promise<void> => {
@@ -98,7 +103,7 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
     } else {
       res.status(200).json(userWithoutPassword(existingUser));
     }
-  } catch (error) { errorResponse(res, 500, 'Internal Server Error', error) }
+  } catch (error) { internalError(res, error) }
 }
 
 export const getUsers = async (req: Request, res: Response): Promise<void> => {
@@ -116,7 +121,7 @@ export const getUsers = async (req: Request, res: Response): Promise<void> => {
       
       res.status(200).json(usersWithoutPassword);
     }
-  } catch (error) { errorResponse(res, 500, 'Internal Server Error', error) }
+  } catch (error) { internalError(res, error) }
 }
 
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
@@ -141,7 +146,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
         errorResponse(res, 401, 'Incorrect Password');
       }
     }
-  } catch (error) { errorResponse(res, 500, 'Internal Server Error', error) }
+  } catch (error) { internalError(res, error) }
 }
 
 export const logoutUser = async (req: Request, res: Response): Promise<void> => {
@@ -159,17 +164,17 @@ export const logoutUser = async (req: Request, res: Response): Promise<void> => 
 
       res.status(200).json(tokenBlacklisted);
     }
-  } catch (error) { errorResponse(res, 500, 'Internal Server Error', error) }
+  } catch (error) { internalError(res, error) }
 }
 
 export const promoteAdmin = async (req: Request, res: Response): Promise<void> => {
   try {
     res.status(404).json({ message: "Endpoint to be developed" })
-  } catch (error) { errorResponse(res, 500, 'Internal Server Error', error) }
+  } catch (error) { internalError(res, error) }
 }
 
 export const demoteAdmin = async (req: Request, res: Response): Promise<void> => {
   try {
     res.status(404).json({ message: "Endpoint to be developed" })
-  } catch (error) { errorResponse(res, 500, 'Internal Server Error', error) }
+  } catch (error) { internalError(res, error) }
 }
