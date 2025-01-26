@@ -12,7 +12,7 @@ const userWithoutPassword = (user: IUser) => {
   return userResponse;
 }
 
-const bcryptSeed: number = 12;
+const bcryptSeed = process.env.BCRYPT_SEED as string;
 const jwtSecret = process.env.JWT_SECRET as string;
 
 export const createUser = async (req: Request, res: Response): Promise<void> => {
