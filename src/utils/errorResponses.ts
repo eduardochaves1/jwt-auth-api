@@ -19,4 +19,8 @@ export const usernameAlreadyInUse = (res: Response) => {
   errorResponse(res, 409, 'Username Already in Use');
 }
 
+export const dbUnknowledgeError = (res: Response) => {
+  errorResponse(res, 500, "The operation was not acknowledged by the database");
+}
+
 export default errorResponse;
